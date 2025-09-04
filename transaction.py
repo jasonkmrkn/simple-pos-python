@@ -6,6 +6,7 @@ import secrets
 
 
 class Item(Enum):
+    """Enum class for all items that the customer can purchase"""
     MOBIL = ("Mobil", 100_000_000)
     TEMPE = ("Tempe", 3_000)
     MIE_BURUNG_DARA = ("Mie Burung Dara", 5_000)
@@ -32,6 +33,8 @@ class Item(Enum):
 
 
 class Transaction:
+
+    """Class for each transaction the customer do"""
 
     def __init__(self, username):
         self.username = username
