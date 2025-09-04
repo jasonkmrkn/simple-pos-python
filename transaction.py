@@ -4,7 +4,6 @@ from enum import Enum
 import string
 import secrets
 
-
 class Item(Enum):
     """Enum class for all items that the customer can purchase"""
     MOBIL = ("Mobil", 100_000_000)
@@ -41,7 +40,6 @@ class Transaction:
         self.transaction_id = generate_transaction_id()
         self.item_lists_with_total_price = []
         self.total_transaction_amount = 0
-
     
     def add_item(self, item:Item, item_qty):
         self.item_lists_with_total_price.append([item, item_qty, item.value[1] * item_qty])
@@ -49,29 +47,39 @@ class Transaction:
     def update_item_qty(self, searched_item:Item, new_qty):
         for i, (item, qty, total_price) in enumerate(self.item_lists_with_total_price):
             if item == searched_item:
+                old_qty = self.item_lists_with_total_price[i][1]
+                self.total_transaction_amount -= old_qty * searched_item.value[1] #old item's total price
                 self.item_lists_with_total_price[i][1] = new_qty
                 self.item_lists_with_total_price[i][2] = new_qty * searched_item.value[1]
+                self.total_transaction_amount += self.item_lists_with_total_price[i][2] #new item's total price
                 break
     
     def change_item(self, item_searched:Item, new_item:Item):
         for i, (item, qty, total_price) in enumerate(self.item_lists_with_total_price):
             if item == item_searched:
+                old_item_total = item_searched.value[1] * qty
+                self.total_transaction_amount -= old_item_total
                 self.item_lists_with_total_price[i][0] = new_item
                 self.item_lists_with_total_price[i][2] = qty * new_item.value[1]
+                self.total_transaction_amount += self.item_lists_with_total_price[i][2]
                 break
 
     def delete_item(self, item_searched:Item):
         for i, (item, qty, total_price) in enumerate(self.item_lists_with_total_price):
             if item == item_searched:
+                old_item_total = self.item_lists_with_total_price[i][2]
+                self.total_transaction_amount -= old_item_total
                 self.item_lists_with_total_price.pop(i)
                 break
 
     def reset_transaction(self):
         self.item_lists_with_total_price = []
+        self.total_transaction_amount = 0;
 
     def check_transactions(self):
         order_list_header = ['NO', 'ITEM NAME', 'QUANTITY', 'PRICE / ITEM', 'TOTAL PRICE']
         order_list = []
+        self.total_transaction_amount = 0;
 
         for i, (item, qty, total_price) in enumerate(self.item_lists_with_total_price):
             order_list.append([i, item.value[0], qty, item.value[1], total_price])

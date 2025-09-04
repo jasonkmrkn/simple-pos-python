@@ -19,7 +19,14 @@ while (True):
     print(" 5. Pay Transaction")
     print(" 6. Exit")
 
-    choice = int(input("\nMenu: "))
+    try:
+        choice = int(input("\nMenu: "))
+    except ValueError:
+        clear_screen()
+        print("Your item choice is invalid!")
+        input("Press enter to continue...")
+        continue
+
     match choice:
         case 1:
             clear_screen()
@@ -31,11 +38,15 @@ while (True):
         case 2:
             clear_screen()
             trs.show_items_list()
-            item_index = int(input("Choose item that you want to purchase. "))
+            item_index = input("Choose item that you want to purchase (write \"X\"/ uppercase x to cancel). ")
+
+            if item_index == 'X':
+                continue
 
             try:
+                item_index = int(item_index)
                 item_to_buy = list(Item)[item_index]
-            except IndexError as e:
+            except IndexError:
                 clear_screen()
                 print("Your item choice is invalid!")
                 input("Press enter to continue...")
@@ -53,18 +64,23 @@ while (True):
             print("2. Change Item")
             print("3. Delete Item")
             print("4. Reset Transaction")
+            print("5. Back to home")
             action_idx = int(input("Choose action:"))
 
-            if (action_idx > 4 or action_idx < 1):
+            if (action_idx > 5 or action_idx < 1):
                 clear_screen()
                 print("Your action input is invalid!")
                 input("press enter to continue!")
                 continue
 
-            item_idx = int(input("Input item number! "))
+            if action_idx == 5:
+                continue
+            
             try:
-                item_to_be_search = trs.item_lists_with_total_price[item_idx][0]
-            except IndexError as e:
+                if action_idx != 4:
+                    item_idx = int(input("Input item number! "))
+                    item_to_be_search = trs.item_lists_with_total_price[item_idx][0]
+            except IndexError:
                 clear_screen()
                 print("Your item choice is invalid!")
                 input("Press enter to continue...")
